@@ -10,10 +10,11 @@ Route::group([
 ], function () {
     Route::get('/', function () {
         return Inertia::render('Dashboard');
-    })->name('dashboard');    
+    })->name('dashboard');
     Route::resource('user', 'UserController');
     Route::resource('role', 'RoleController');
     Route::resource('permission', 'PermissionController');
+    Route::resource('short_link', 'ShortLinkController');
     Route::resource('menu', 'MenuController')->except([
         'show',
     ]);
