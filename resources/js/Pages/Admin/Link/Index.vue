@@ -50,6 +50,57 @@ function destroy(id) {
 
         <Head title="Links" />
         <SectionMain>
+            <SectionTitleLineWithButton :icon="mdiAccountKey" title="ShortLinks" main>
+                <!-- <BaseButton v-if="can.delete" :route-name="route('admin.link.create')" :icon="mdiPlus" label="Add"
+                    color="info" rounded-full small /> -->
+            </SectionTitleLineWithButton>
+            <NotificationBar :key="Date.now()" v-if="$page.props.flash.message" color="success" :icon="mdiAlertBoxOutline">
+                {{ $page.props.flash.message }}
+            </NotificationBar>
+            <CardBox class="mb-6" has-table>
+                <form @submit.prevent="form.get(route('admin.link.index'))">
+                    <div class="py-2 flex">
+                        <div class="flex pl-4">
+                            <input type="search" v-model="form.search" class="
+                  rounded-md
+                  shadow-sm
+                  border-gray-300
+                  focus:border-indigo-300
+                  focus:ring
+                  focus:ring-indigo-200
+                  focus:ring-opacity-50
+                " placeholder="Search" />
+                            <BaseButton label="Search" type="submit" color="info"
+                                class="ml-4 inline-flex items-center px-4 py-2" />
+                        </div>
+                    </div>
+                </form>
+            </CardBox>
+            <CardBox class="mb-6" has-table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <Sort label="Name" attribute="name" />
+                            </th>
+                            <th v-if="can.edit || can.delete">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr v-for="link in links.data" :key="link.id">
+                            <td data-label="Name">
+                                <p>
+                                    {{ link.name }}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="py-4">
+                    <Pagination :data="links" />
+                </div>
+            </CardBox>
             this is text
         </SectionMain>
     </LayoutAuthenticated>
