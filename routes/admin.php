@@ -14,7 +14,7 @@ Route::group([
     Route::resource('user', 'UserController');
     Route::resource('role', 'RoleController');
     Route::resource('permission', 'PermissionController');
-    Route::resource('short_link', 'ShortLinkController');
+    Route::resource('shortlink', 'ShortLinkController');
     Route::resource('menu', 'MenuController')->except([
         'show',
     ]);

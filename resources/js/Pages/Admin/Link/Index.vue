@@ -51,8 +51,8 @@ function destroy(id) {
         <Head title="Links" />
         <SectionMain>
             <SectionTitleLineWithButton :icon="mdiAccountKey" title="ShortLinks" main>
-                <!-- <BaseButton v-if="can.delete" :route-name="route('admin.link.create')" :icon="mdiPlus" label="Add"
-                    color="info" rounded-full small /> -->
+                <BaseButton v-if="can.delete" :route-name="route('admin.shortlink.create')" :icon="mdiPlus" label="Add"
+                    color="info" rounded-full small />
             </SectionTitleLineWithButton>
             <NotificationBar :key="Date.now()" v-if="$page.props.flash.message" color="success" :icon="mdiAlertBoxOutline">
                 {{ $page.props.flash.message }}
