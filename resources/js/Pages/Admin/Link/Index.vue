@@ -40,7 +40,7 @@ const formDelete = useForm({})
 
 function destroy(id) {
     if (confirm("Are you sure you want to delete?")) {
-        formDelete.delete(route("admin.link.destroy", id))
+        formDelete.delete(route("admin.shortlink.destroy", id))
     }
 }
 </script>
@@ -58,7 +58,7 @@ function destroy(id) {
                 {{ $page.props.flash.message }}
             </NotificationBar>
             <CardBox class="mb-6" has-table>
-                <form @submit.prevent="form.get(route('admin.link.index'))">
+                <form @submit.prevent="form.get(route('admin.shortlink.index'))">
                     <div class="py-2 flex">
                         <div class="flex pl-4">
                             <input type="search" v-model="form.search" class="
@@ -90,9 +90,22 @@ function destroy(id) {
                     <tbody>
                         <tr v-for="link in links.data" :key="link.id">
                             <td data-label="Name">
-                                <p>
-                                    {{ link.name }}
-                                </p>
+                                <Link :href="route('admin.shortlink.show', link.id)" class="
+                    no-underline
+                    hover:underline
+                    text-cyan-600
+                    dark:text-cyan-400
+                  ">
+                                {{ link.name }}
+                                </Link>
+                            </td>
+                            <td v-if="can.edit || can.delete" class="before:hidden lg:w-1 whitespace-nowrap">
+                                <BaseButtons type="justify-start lg:justify-end" no-wrap>
+                                    <BaseButton v-if="can.edit" :route-name="route('admin.shortlink.edit', link.id)"
+                                        color="info" :icon="mdiSquareEditOutline" small />
+                                    <BaseButton v-if="can.delete" color="danger" :icon="mdiTrashCan" small
+                                        @click="destroy(link.id)" />
+                                </BaseButtons>
                             </td>
                         </tr>
                     </tbody>
@@ -101,7 +114,6 @@ function destroy(id) {
                     <Pagination :data="links" />
                 </div>
             </CardBox>
-            this is text
         </SectionMain>
     </LayoutAuthenticated>
 </template>

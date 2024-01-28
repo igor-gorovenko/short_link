@@ -47,39 +47,21 @@ function destroy(id) {
 
 <template>
   <LayoutAuthenticated>
+
     <Head title="Permissions" />
     <SectionMain>
-      <SectionTitleLineWithButton
-        :icon="mdiAccountKey"
-        title="Permissions"
-        main
-      >
-        <BaseButton
-          v-if="can.delete"
-          :route-name="route('admin.permission.create')"
-          :icon="mdiPlus"
-          label="Add"
-          color="info"
-          rounded-full
-          small
-        />
+      <SectionTitleLineWithButton :icon="mdiAccountKey" title="Permissions" main>
+        <BaseButton v-if="can.delete" :route-name="route('admin.permission.create')" :icon="mdiPlus" label="Add"
+          color="info" rounded-full small />
       </SectionTitleLineWithButton>
-      <NotificationBar
-        :key="Date.now()"
-        v-if="$page.props.flash.message"
-        color="success"
-        :icon="mdiAlertBoxOutline"
-      >
+      <NotificationBar :key="Date.now()" v-if="$page.props.flash.message" color="success" :icon="mdiAlertBoxOutline">
         {{ $page.props.flash.message }}
       </NotificationBar>
       <CardBox class="mb-6" has-table>
         <form @submit.prevent="form.get(route('admin.permission.index'))">
           <div class="py-2 flex">
             <div class="flex pl-4">
-              <input
-                type="search"
-                v-model="form.search"
-                class="
+              <input type="search" v-model="form.search" class="
                   rounded-md
                   shadow-sm
                   border-gray-300
@@ -87,15 +69,8 @@ function destroy(id) {
                   focus:ring
                   focus:ring-indigo-200
                   focus:ring-opacity-50
-                "
-                placeholder="Search"
-              />
-              <BaseButton
-                label="Search"
-                type="submit"
-                color="info"
-                class="ml-4 inline-flex items-center px-4 py-2"
-              />
+                " placeholder="Search" />
+              <BaseButton label="Search" type="submit" color="info" class="ml-4 inline-flex items-center px-4 py-2" />
             </div>
           </div>
         </form>
@@ -114,37 +89,21 @@ function destroy(id) {
           <tbody>
             <tr v-for="permission in permissions.data" :key="permission.id">
               <td data-label="Name">
-                <Link
-                  :href="route('admin.permission.show', permission.id)"
-                  class="
+                <Link :href="route('admin.permission.show', permission.id)" class="
                     no-underline
                     hover:underline
                     text-cyan-600
                     dark:text-cyan-400
-                  "
-                >
-                  {{ permission.name }}
+                  ">
+                {{ permission.name }}
                 </Link>
               </td>
-              <td
-                v-if="can.edit || can.delete"
-                class="before:hidden lg:w-1 whitespace-nowrap"
-              >
+              <td v-if="can.edit || can.delete" class="before:hidden lg:w-1 whitespace-nowrap">
                 <BaseButtons type="justify-start lg:justify-end" no-wrap>
-                  <BaseButton
-                    v-if="can.edit"
-                    :route-name="route('admin.permission.edit', permission.id)"
-                    color="info"
-                    :icon="mdiSquareEditOutline"
-                    small
-                  />
-                  <BaseButton
-                    v-if="can.delete"
-                    color="danger"
-                    :icon="mdiTrashCan"
-                    small
-                    @click="destroy(permission.id)"
-                  />
+                  <BaseButton v-if="can.edit" :route-name="route('admin.permission.edit', permission.id)" color="info"
+                    :icon="mdiSquareEditOutline" small />
+                  <BaseButton v-if="can.delete" color="danger" :icon="mdiTrashCan" small
+                    @click="destroy(permission.id)" />
                 </BaseButtons>
               </td>
             </tr>
