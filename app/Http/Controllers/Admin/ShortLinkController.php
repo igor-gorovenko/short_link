@@ -85,8 +85,10 @@ class ShortLinkController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function show(Link $link)
+    public function show($id)
     {
+        $link = Link::findOrFail($id);
+
         return Inertia::render('Admin/Link/Show', [
             'link' => $link,
         ]);
