@@ -76,7 +76,7 @@ class ShortLinkController extends Controller
     {
         Link::create($request->all());
 
-        return redirect()->route('admin.link.index')
+        return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link created successfully.'));
     }
 
@@ -99,8 +99,10 @@ class ShortLinkController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function edit(Link $link)
+    public function edit($id)
     {
+        $link = Link::findOrFail($id);
+
         return Inertia::render('Admin/Link/Edit', [
             'link' => $link
         ]);
@@ -111,11 +113,12 @@ class ShortLinkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateLinkRequest $request, Link $link)
+    public function update(UpdateLinkRequest $request, $id)
     {
+        $link = Link::findOrFail($id);
         $link->update($request->all());
 
-        return redirect()->route('admin.link.index')
+        return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link updated successfully.'));
     }
 

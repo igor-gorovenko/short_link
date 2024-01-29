@@ -24,7 +24,7 @@ class UpdateLinkRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:' . config('link.table_names.links', 'links') . ',name,' . $this->link->id,
+            'name' => 'required|string|max:255|unique:' . config('link.table_names.links', 'links') . ',name,' . $this->route('admin.shortlink.update', $this->id),
         ];
     }
 }

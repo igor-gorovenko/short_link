@@ -13,17 +13,43 @@ import FormControl from '@/Components/FormControl.vue'
 import BaseButton from '@/Components/BaseButton.vue'
 import BaseButtons from '@/Components/BaseButtons.vue'
 
+const props = defineProps({
+    link: {
+        type: Object,
+        default: () => ({}),
+    }
+})
+
 const form = useForm({
-    name: '',
+    _method: 'put',
+    name: props.link.name,
 })
 </script>
 
 <template>
     <LayoutAuthenticated>
 
-        <Head title="Create short link" />
+        <Head title="Update shortlink" />
         <SectionMain>
-            this is edit page
+            <SectionTitleLineWithButton :icon="mdiAccountKey" title="Update shortlink" main>
+                <BaseButton :route-name="route('admin.shortlink.index')" :icon="mdiArrowLeftBoldOutline" label="Back"
+                    color="white" rounded-full small />
+            </SectionTitleLineWithButton>
+            <CardBox form @submit.prevent="form.post(route('admin.shortlink.update', props.link.id))">
+                <FormField label="Name" :class="{ 'text-red-400': form.errors.name }">
+                    <FormControl v-model="form.name" type="text" placeholder="Enter Name" :error="form.errors.name">
+                        <div class="text-red-400 text-sm" v-if="form.errors.name">
+                            {{ form.errors.name }}
+                        </div>
+                    </FormControl>
+                </FormField>
+                <template #footer>
+                    <BaseButtons>
+                        <BaseButton type="submit" color="info" label="Submit" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing" />
+                    </BaseButtons>
+                </template>
+            </CardBox>
         </SectionMain>
     </LayoutAuthenticated>
 </template>
