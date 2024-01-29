@@ -124,11 +124,12 @@ class ShortLinkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Link $link)
+    public function destroy($id)
     {
+        $link = Link::findOrFail($id);
         $link->delete();
 
-        return redirect()->route('admin.link.index')
+        return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link deleted successfully.'));
     }
 }
