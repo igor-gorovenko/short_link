@@ -39,10 +39,40 @@ const props = defineProps({
                   hidden
                   lg:block
                 ">
-                                Name
+                                Key
                             </td>
-                            <td data-label="Name">
-                                {{ link.name }}
+                            <td data-label="Url_key">
+                                {{ link.url_key }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="
+                  p-4
+                  pl-8
+                  text-slate-500
+                  dark:text-slate-400
+                  hidden
+                  lg:block
+                ">
+                                Destination_url
+                            </td>
+                            <td data-label="Destination_url">
+                                {{ link.destination_url }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="
+                  p-4
+                  pl-8
+                  text-slate-500
+                  dark:text-slate-400
+                  hidden
+                  lg:block
+                ">
+                                Shortlink
+                            </td>
+                            <td data-label="Shortlink">
+                                {{ link.generated_shortlink }}
                             </td>
                         </tr>
                         <tr>

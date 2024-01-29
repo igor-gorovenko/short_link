@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('url_key');
+            $table->string('destination_url');
+            $table->string('generated_shortlink');
             $table->timestamps();
         });
     }

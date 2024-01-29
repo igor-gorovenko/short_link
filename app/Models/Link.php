@@ -10,7 +10,9 @@ class Link extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'url_key',
+        'destination_url',
+        'generated_shortlink',
         'updated_at',
         'created_at',
     ];
