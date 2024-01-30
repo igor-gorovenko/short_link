@@ -24,7 +24,9 @@ class StoreLinkRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:' . config('link.table_names.links', 'links') . ',name',
+            'url_key' => 'required|string|max:255|unique:' . config('link.table_names.links', 'links') . ',url_key',
+            'destination_url' => 'required|string|max:255|unique:' . config('link.table_names.links', 'links') . ',destination_url',
+            'generated_shortlink' => 'required|string|max:255|unique:' . config('link.table_names.links', 'links') . ',generated_shortlink',
         ];
     }
 }
