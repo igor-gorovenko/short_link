@@ -24,7 +24,7 @@ class StoreLinkRequest extends FormRequest
     public function rules()
     {
         return [
-            'url_key' => 'nullable|string|max:20|unique:' . config('link.table_names.links', 'links') . ',url_key',
+            'url_key' => 'nullable|string|max:255|unique:' . config('link.table_names.links', 'links') . ',url_key',
             'destination_url' => 'required|string|max:255|unique:' . config('link.table_names.links', 'links') . ',destination_url',
         ];
     }

@@ -22,7 +22,8 @@ const props = defineProps({
 
 const form = useForm({
     _method: 'put',
-    name: props.link.name,
+    url_key: props.link.url_key,
+    destination_url: props.link.destination_url,
 })
 </script>
 
@@ -36,10 +37,19 @@ const form = useForm({
                     color="white" rounded-full small />
             </SectionTitleLineWithButton>
             <CardBox form @submit.prevent="form.post(route('admin.shortlink.update', props.link.id))">
-                <FormField label="Name" :class="{ 'text-red-400': form.errors.name }">
-                    <FormControl v-model="form.name" type="text" placeholder="Enter Name" :error="form.errors.name">
-                        <div class="text-red-400 text-sm" v-if="form.errors.name">
-                            {{ form.errors.name }}
+                <FormField label="Url Key" :class="{ 'text-red-400': form.errors.url_key }">
+                    <FormControl v-model="form.url_key" type="text" placeholder="Enter Url key"
+                        :error="form.errors.url_key">
+                        <div class="text-red-400 text-sm" v-if="form.errors.url_key">
+                            {{ form.errors.url_key }}
+                        </div>
+                    </FormControl>
+                </FormField>
+                <FormField label="Destination Url" :class="{ 'text-red-400': form.errors.destination_url }">
+                    <FormControl v-model="form.destination_url" type="text" placeholder="Enter Destination Url"
+                        :error="form.errors.destination_url">
+                        <div class="text-red-400 text-sm" v-if="form.errors.destination_url">
+                            {{ form.errors.destination_url }}
                         </div>
                     </FormControl>
                 </FormField>
