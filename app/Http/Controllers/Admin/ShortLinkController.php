@@ -8,6 +8,7 @@ use App\Http\Requests\StoreLinkRequest;
 use App\Http\Requests\UpdateLinkRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class ShortLinkController extends Controller
 {
@@ -74,7 +75,17 @@ class ShortLinkController extends Controller
      */
     public function store(StoreLinkRequest $request)
     {
-        Link::create($request->all());
+        $linkData = $request->all();
+
+        // Generate url_key if empty
+        if (empty($linkData['url_key'])) {
+            $linkData['url_key'] = Str::random(8);
+        }
+
+        // Generate Short Link
+        $linkData['generated_shortlink'] = Str::random(8);
+
+        Link::create($linkData);
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link created successfully.'));

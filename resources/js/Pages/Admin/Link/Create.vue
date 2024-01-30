@@ -16,7 +16,6 @@ import BaseButtons from '@/Components/BaseButtons.vue'
 const form = useForm({
     url_key: '',
     destination_url: '',
-    generated_shortlink: '',
 })
 </script>
 
@@ -30,27 +29,19 @@ const form = useForm({
                     color="white" rounded-full small />
             </SectionTitleLineWithButton>
             <CardBox form @submit.prevent="form.post(route('admin.shortlink.store'))">
-                <FormField label="Url_key" :class="{ 'text-red-400': form.errors.url_key }">
-                    <FormControl v-model="form.url_key" type="text" placeholder="Enter Url_key"
+                <FormField label="Url Key (optional)" :class="{ 'text-red-400': form.errors.url_key }">
+                    <FormControl v-model="form.url_key" type="text" placeholder="Enter Url key"
                         :error="form.errors.url_key">
                         <div class="text-red-400 text-sm" v-if="form.errors.url_key">
                             {{ form.errors.url_key }}
                         </div>
                     </FormControl>
                 </FormField>
-                <FormField label="Destination_url" :class="{ 'text-red-400': form.errors.destination_url }">
-                    <FormControl v-model="form.destination_url" type="text" placeholder="Enter Destination_url"
+                <FormField label="Destination Url" :class="{ 'text-red-400': form.errors.destination_url }">
+                    <FormControl v-model="form.destination_url" type="text" placeholder="Enter Destination Url"
                         :error="form.errors.destination_url">
                         <div class="text-red-400 text-sm" v-if="form.errors.destination_url">
                             {{ form.errors.destination_url }}
-                        </div>
-                    </FormControl>
-                </FormField>
-                <FormField label="Shortlink" :class="{ 'text-red-400': form.errors.generated_shortlink }">
-                    <FormControl v-model="form.generated_shortlink" type="text" placeholder="Enter Shortlink"
-                        :error="form.errors.generated_shortlink">
-                        <div class="text-red-400 text-sm" v-if="form.errors.generated_shortlink">
-                            {{ form.errors.generated_shortlink }}
                         </div>
                     </FormControl>
                 </FormField>
