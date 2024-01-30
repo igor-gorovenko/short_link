@@ -81,13 +81,13 @@ function destroy(id) {
                     <thead>
                         <tr>
                             <th>
-                                <Sort label="Key" attribute="Url_key" />
+                                <Sort label="Shortlink" attribute="Generated_shortlink" />
                             </th>
                             <th>
-                                <Sort label="Destination_url" attribute="Destination_url" />
+                                <Sort label="Url Key" attribute="Url_key" />
                             </th>
                             <th>
-                                <Sort label="Shortlink" attribute="Shortlink" />
+                                <Sort label="Destination Url" attribute="Destination_url" />
                             </th>
                             <th v-if="can.edit || can.delete">Actions</th>
                         </tr>
@@ -95,21 +95,23 @@ function destroy(id) {
 
                     <tbody>
                         <tr v-for="link in links.data" :key="link.id">
-                            <td data-label="Url_key">
+                            <td data-label="Generated_shortlink">
                                 <Link :href="route('admin.shortlink.show', link.id)" class="
                     no-underline
                     hover:underline
                     text-cyan-600
                     dark:text-cyan-400
                   ">
-                                {{ link.url_key }}
+                                {{ link.generated_shortlink }}
+
                                 </Link>
+                            </td>
+                            <td data-label="Url_key">
+                                {{ link.url_key }}
+
                             </td>
                             <td data-label="Destination_url">
                                 {{ link.destination_url }}
-                            </td>
-                            <td data-label="Shortlink">
-                                {{ link.generated_shortlink }}
                             </td>
                             <td v-if="can.edit || can.delete" class="before:hidden lg:w-1 whitespace-nowrap">
                                 <BaseButtons type="justify-start lg:justify-end" no-wrap>

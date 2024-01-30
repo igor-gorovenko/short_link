@@ -79,7 +79,7 @@ class ShortLinkController extends Controller
 
         // Generate url_key if empty
         if (empty($linkData['url_key'])) {
-            $linkData['url_key'] = Str::random(8);
+            $linkData['url_key'] = 'key_' . Str::random(8);
         }
 
         // Generate Short Link
