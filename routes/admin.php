@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\ShortLinkController;
 
 Route::group([
     'namespace' => 'App\Http\Controllers\Admin',
@@ -15,6 +16,7 @@ Route::group([
     Route::resource('role', 'RoleController');
     Route::resource('permission', 'PermissionController');
     Route::resource('shortlink', 'ShortLinkController');
+    Route::get('shortlink/{id}/statistics', [ShortLinkController::class, 'statistics'])->name('shortlink.statistics');
     Route::resource('menu', 'MenuController')->except([
         'show',
     ]);

@@ -93,6 +93,12 @@ const props = defineProps({
                         </tr>
                     </tbody>
                 </table>
+                <template #footer>
+                    <BaseButtons>
+                        <BaseButton :route-name="route('admin.shortlink.statistics', link.id)" label="Statistics"
+                            color="info" rounded />
+                    </BaseButtons>
+                </template>
             </CardBox>
         </SectionMain>
     </LayoutAuthenticated>

@@ -105,6 +105,15 @@ class ShortLinkController extends Controller
         ]);
     }
 
+    public function statistics($id)
+    {
+        $link = Link::findOrFail($id);
+
+        return Inertia::render('Admin/Link/Statistics', [
+            'link' => $link,
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
