@@ -22,6 +22,7 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
-        "@inertiajs/vue3": "^1.0.0"
+        "@inertiajs/vue3": "^1.0.0",
+        "clipboard": "^2.0.11"
     }
 }

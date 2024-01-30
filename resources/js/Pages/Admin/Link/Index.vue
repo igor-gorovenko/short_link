@@ -16,6 +16,7 @@ import BaseButtons from "@/Components/BaseButtons.vue"
 import NotificationBar from "@/Components/NotificationBar.vue"
 import Pagination from "@/Components/Admin/Pagination.vue"
 import Sort from "@/Components/Admin/Sort.vue"
+import Clipboard from 'clipboard'
 
 const props = defineProps({
     links: {
@@ -42,6 +43,28 @@ function destroy(id) {
     if (confirm("Are you sure you want to delete?")) {
         formDelete.delete(route("admin.shortlink.destroy", id))
     }
+}
+
+const setupClipboard = (textToCopy) => {
+    // Создайте новый объект Clipboard.js и передайте текст для копирования
+    const clipboard = new Clipboard('.base-button', {
+        text: () => textToCopy,
+    });
+
+    // Обработчик успешного копирования
+    clipboard.on('success', (e) => {
+        console.log('Link copied!');
+        e.clearSelection();
+    });
+
+    // Обработчик ошибок при копировании
+    clipboard.on('error', (e) => {
+        console.error('Copy failed:', e.action);
+    });
+}
+
+const onButtonClick = (link) => {
+    setupClipboard(link.generated_shortlink);
 }
 </script>
 
@@ -115,10 +138,14 @@ function destroy(id) {
                             </td>
                             <td v-if="can.edit || can.delete" class="before:hidden lg:w-1 whitespace-nowrap">
                                 <BaseButtons type="justify-start lg:justify-end" no-wrap>
+                                    <BaseButton label="Copy" color="gray" class="base-button"
+                                        @click="() => onButtonClick(link)" small />
+
                                     <BaseButton v-if="can.edit" :route-name="route('admin.shortlink.edit', link.id)"
                                         color="info" :icon="mdiSquareEditOutline" small />
                                     <BaseButton v-if="can.delete" color="danger" :icon="mdiTrashCan" small
                                         @click="destroy(link.id)" />
+
                                 </BaseButtons>
                             </td>
                         </tr>
