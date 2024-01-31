@@ -46,25 +46,23 @@ function destroy(id) {
 }
 
 const setupClipboard = (textToCopy) => {
-    // Создайте новый объект Clipboard.js и передайте текст для копирования
+    // Created new object Clipboard.js and take text for copy
     const clipboard = new Clipboard('.base-button', {
         text: () => textToCopy,
     });
 
-    // Обработчик успешного копирования
     clipboard.on('success', (e) => {
         console.log('Link copied!');
         e.clearSelection();
     });
 
-    // Обработчик ошибок при копировании
     clipboard.on('error', (e) => {
         console.error('Copy failed:', e.action);
     });
 }
 
 const onButtonClick = (link) => {
-    setupClipboard(link.generated_shortlink);
+    setupClipboard(link.default_short_url);
 }
 </script>
 
@@ -104,7 +102,7 @@ const onButtonClick = (link) => {
                     <thead>
                         <tr>
                             <th>
-                                <Sort label="Shortlink" attribute="Generated_shortlink" />
+                                <Sort label="Shortlink" attribute="Short_link" />
                             </th>
                             <th>
                                 <Sort label="Url Key" attribute="Url_key" />
@@ -118,14 +116,14 @@ const onButtonClick = (link) => {
 
                     <tbody>
                         <tr v-for="link in links.data" :key="link.id">
-                            <td data-label="Generated_shortlink">
+                            <td data-label="Short_link">
                                 <Link :href="route('admin.shortlink.show', link.id)" class="
                     no-underline
                     hover:underline
                     text-cyan-600
                     dark:text-cyan-400
                   ">
-                                {{ link.generated_shortlink }}
+                                {{ link.default_short_url }}
 
                                 </Link>
                             </td>

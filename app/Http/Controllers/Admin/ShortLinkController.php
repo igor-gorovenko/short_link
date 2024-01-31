@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Link;
+
 use App\Http\Requests\StoreLinkRequest;
 use App\Http\Requests\UpdateLinkRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use AshAllenDesign\ShortURL\Classes\Builder as ShortUrlBuilder;
+use AshAllenDesign\ShortURL\Models\ShortURL;
 
 class ShortLinkController extends Controller
 {
@@ -28,7 +29,7 @@ class ShortLinkController extends Controller
      */
     public function index()
     {
-        $links = (new Link)->newQuery();
+        $links = (new ShortURL)->newQuery();
 
         if (request()->has('search')) {
             $links->where('name', 'Like', '%' . request()->input('search') . '%');
@@ -76,20 +77,18 @@ class ShortLinkController extends Controller
      */
     public function store(StoreLinkRequest $request)
     {
-        $linkData = $request->all();
+        $destination_url = $request->destination_url;
+        $url_key = $request->url_key;
+
         $builder = new ShortUrlBuilder();
 
         // Generate url_key if empty
-        if (empty($linkData['url_key'])) {
-            $linkData['url_key'] = Str::random(8);
+        if (empty($url_key)) {
+            $url_key = Str::random(8);
         }
 
-        $shortURLObject = $builder->destinationUrl('http://' . $linkData['destination_url'])->urlKey($linkData['url_key'])->make();
-        $shortURL = $shortURLObject->default_short_url;
-
-        $linkData['generated_shortlink'] = $shortURL;
-
-        Link::create($linkData);
+        // Create short link
+        $builder->destinationUrl('http://' . $destination_url)->urlKey($url_key)->make();
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link created successfully.'));
@@ -102,7 +101,7 @@ class ShortLinkController extends Controller
      */
     public function show($id)
     {
-        $link = Link::findOrFail($id);
+        $link = ShortURL::findOrFail($id);
 
         return Inertia::render('Admin/Link/Show', [
             'link' => $link,
@@ -111,7 +110,7 @@ class ShortLinkController extends Controller
 
     public function statistics($id)
     {
-        $link = Link::findOrFail($id);
+        $link = ShortURL::findOrFail($id);
 
         return Inertia::render('Admin/Link/Statistics', [
             'link' => $link,
@@ -125,7 +124,7 @@ class ShortLinkController extends Controller
      */
     public function edit($id)
     {
-        $link = Link::findOrFail($id);
+        $link = ShortURL::findOrFail($id);
 
         return Inertia::render('Admin/Link/Edit', [
             'link' => $link
@@ -139,7 +138,7 @@ class ShortLinkController extends Controller
      */
     public function update(UpdateLinkRequest $request, $id)
     {
-        $link = Link::findOrFail($id);
+        $link = ShortURL::findOrFail($id);
         $link->update($request->all());
 
         return redirect()->route('admin.shortlink.index')
@@ -153,7 +152,7 @@ class ShortLinkController extends Controller
      */
     public function destroy($id)
     {
-        $link = Link::findOrFail($id);
+        $link = ShortURL::findOrFail($id);
         $link->delete();
 
         return redirect()->route('admin.shortlink.index')
