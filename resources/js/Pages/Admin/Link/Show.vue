@@ -41,8 +41,8 @@ const props = defineProps({
                 ">
                                 Shortlink
                             </td>
-                            <td data-label="Generated_shortlink">
-                                {{ link.generated_shortlink }}
+                            <td data-label="Short_url">
+                                {{ link.default_short_url }}
                             </td>
                         </tr>
                         <tr>
