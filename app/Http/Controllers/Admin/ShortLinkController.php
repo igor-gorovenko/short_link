@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateLinkRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use AshAllenDesign\ShortURL\Classes\Builder as ShortUrlBuilder;
 
 class ShortLinkController extends Controller
 {
@@ -76,14 +77,17 @@ class ShortLinkController extends Controller
     public function store(StoreLinkRequest $request)
     {
         $linkData = $request->all();
+        $builder = new ShortUrlBuilder();
 
         // Generate url_key if empty
         if (empty($linkData['url_key'])) {
-            $linkData['url_key'] = 'key_' . Str::random(8);
+            $linkData['url_key'] = Str::random(8);
         }
 
-        // Generate Short Link
-        $linkData['generated_shortlink'] = Str::random(8);
+        $shortURLObject = $builder->destinationUrl('http://' . $linkData['destination_url'])->urlKey($linkData['url_key'])->make();
+        $shortURL = $shortURLObject->default_short_url;
+
+        $linkData['generated_shortlink'] = $shortURL;
 
         Link::create($linkData);
 
