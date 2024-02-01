@@ -66,12 +66,14 @@ php artisan migrate
 
 ### 4. Запускаем сервер и доступ
 
-Запуск
+Запуск сервера
+
 ```bash
 npm run dev
 ```
 
 Доступ
+
 ```
 superadmin@example.com
 password
