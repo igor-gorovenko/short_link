@@ -102,7 +102,7 @@ const onButtonClick = (link) => {
                     <thead>
                         <tr>
                             <th>
-                                <Sort label="Shortlink" attribute="Short_link" />
+                                <Sort label="Shortlink" attribute="Default_short_url" />
                             </th>
                             <th>
                                 <Sort label="Url Key" attribute="Url_key" />
@@ -116,7 +116,7 @@ const onButtonClick = (link) => {
 
                     <tbody>
                         <tr v-for="link in links.data" :key="link.id">
-                            <td data-label="Short_link">
+                            <td data-label="Default_short_url">
                                 <Link :href="route('admin.shortlink.show', link.id)" class="
                     no-underline
                     hover:underline
@@ -124,7 +124,6 @@ const onButtonClick = (link) => {
                     dark:text-cyan-400
                   ">
                                 {{ link.default_short_url }}
-
                                 </Link>
                             </td>
                             <td data-label="Url_key">
@@ -136,14 +135,12 @@ const onButtonClick = (link) => {
                             </td>
                             <td v-if="can.edit || can.delete" class="before:hidden lg:w-1 whitespace-nowrap">
                                 <BaseButtons type="justify-start lg:justify-end" no-wrap>
-                                    <BaseButton label="Copy" color="gray" class="base-button"
+                                    <BaseButton label="Copy Short URL" color="white" class="base-button"
                                         @click="() => onButtonClick(link)" small />
-
                                     <BaseButton v-if="can.edit" :route-name="route('admin.shortlink.edit', link.id)"
                                         color="info" :icon="mdiSquareEditOutline" small />
                                     <BaseButton v-if="can.delete" color="danger" :icon="mdiTrashCan" small
                                         @click="destroy(link.id)" />
-
                                 </BaseButtons>
                             </td>
                         </tr>
