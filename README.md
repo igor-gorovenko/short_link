@@ -34,7 +34,13 @@ php artisan key:generate
 
 добавлвем данные для связи с БД в .env
 
-Установка пакетов и миграции
+### 3. Установка пакетов и миграции
+
+Детали
+
+Админка: https://github.com/balajidharma/laravel-vue-admin-panel
+
+Пакет для ссылок: https://github.com/ash-jc-allen/short-url 
 
 ```bash
 composer require ashallendesign/short-url
@@ -58,8 +64,15 @@ npm install
 php artisan migrate
 ```
 
-запускаем сервер
+### 4. Запускаем сервер и доступ
 
+Запуск
 ```bash
 npm run dev
+```
+
+Доступ
+```
+superadmin@example.com
+password
 ```
