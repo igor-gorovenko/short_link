@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Str;
 use AshAllenDesign\ShortURL\Classes\Builder as ShortUrlBuilder;
 use AshAllenDesign\ShortURL\Models\ShortURL;
+use AshAllenDesign\ShortURL\Models\ShortURLVisit;
 
 class ShortLinkController extends Controller
 {
@@ -111,9 +112,27 @@ class ShortLinkController extends Controller
     public function statistics($id)
     {
         $link = ShortURL::findOrFail($id);
+        $visits = (new ShortURLVisit)->newQuery();
+
+        $visits->where('short_url_id', $id);
+
+        if (request()->query('sort')) {
+            $attribute = request()->query('sort');
+            $sort_order = 'ASC';
+            if (strncmp($attribute, '-', 1) === 0) {
+                $sort_order = 'DESC';
+                $attribute = substr($attribute, 1);
+            }
+            $visits->orderBy($attribute, $sort_order);
+        } else {
+            $visits->latest();
+        }
+
+        $visits = $visits->paginate(5)->onEachSide(2)->appends(request()->query());
 
         return Inertia::render('Admin/Link/Statistics', [
             'link' => $link,
+            'visits' => $visits,
         ]);
     }
 
