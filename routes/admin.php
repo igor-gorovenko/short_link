@@ -17,6 +17,7 @@ Route::group([
     Route::resource('permission', 'PermissionController');
     Route::resource('shortlink', 'ShortLinkController');
     Route::get('shortlink/{id}/statistics', [ShortLinkController::class, 'statistics'])->name('shortlink.statistics');
+    Route::get('short/{shortURLKey}', '\AshAllenDesign\ShortURL\Controllers\ShortURLController');
     Route::resource('menu', 'MenuController')->except([
         'show',
     ]);
