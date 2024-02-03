@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use App\Http\Controllers\Admin\ShortLinkController;
+use AshAllenDesign\ShortURL\Controllers\ShortURLController;
 
 Route::group([
     'namespace' => 'App\Http\Controllers\Admin',
@@ -17,7 +18,7 @@ Route::group([
     Route::resource('permission', 'PermissionController');
     Route::resource('shortlink', 'ShortLinkController');
     Route::get('shortlink/{id}/statistics', [ShortLinkController::class, 'statistics'])->name('shortlink.statistics');
-    Route::get('short/{shortURLKey}', '\AshAllenDesign\ShortURL\Controllers\ShortURLController');
+    Route::get('short/{shortURLKey}', [ShortURLController::class, '__invoke'])->name('shortlink.redirect');
     Route::resource('menu', 'MenuController')->except([
         'show',
     ]);
