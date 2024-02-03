@@ -163,7 +163,7 @@ class ShortLinkController extends Controller
     public function update(UpdateLinkRequest $request, $id)
     {
         $link = ShortURL::findOrFail($id);
-        $link->update($request->all());
+        $link->update($request->validated());
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link updated successfully.'));
