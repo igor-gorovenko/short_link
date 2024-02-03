@@ -80,8 +80,13 @@ class ShortLinkController extends Controller
     {
         $destination_url = $request->destination_url;
         $url_key = $request->url_key;
+        $http_part_url = 'https://';
 
         $builder = new ShortUrlBuilder();
+
+        if (!str_starts_with($destination_url, 'http')) {
+            $destination_url = $http_part_url . $destination_url;
+        }
 
         // Generate url_key if empty
         if (empty($url_key)) {
@@ -89,7 +94,7 @@ class ShortLinkController extends Controller
         }
 
         // Create short link
-        $builder->destinationUrl('http://' . $destination_url)->urlKey($url_key)->make();
+        $builder->destinationUrl($destination_url)->urlKey($url_key)->make();
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link created successfully.'));
