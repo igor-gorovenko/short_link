@@ -21,18 +21,25 @@ cd short_link
 
 ### 2. Install dependencies
 
+Установить composer
+
 ```bash
 composer install
 ```
 
-Копируем .env.example и меняем имя: .env
+Создать .env файл, если его нет
 
-Генерируем ключ
+```bash
+composer run-script post-root-package-install
+```
+
+Сгенерировать ключ ключ
+
 ```bash
 php artisan key:generate
 ```
 
-добавлвем данные для связи с БД в .env
+Нужно обновить данные для связи с БД в .env
 
 ### 3. Установка пакетов и миграции
 
@@ -43,25 +50,19 @@ php artisan key:generate
 Пакет для ссылок: https://github.com/ash-jc-allen/short-url 
 
 ```bash
-composer require ashallendesign/short-url
-```
-
-```bash
 php artisan vendor:publish --tag=admin-core
 ```
-```bash
-php artisan migrate --seed --seeder=AdminCoreSeeder
-```
+
 ```bash
 php artisan vendor:publish --provider="AshAllenDesign\ShortURL\Providers\ShortURLProvider"
 ```
 
 ```bash
-npm install
+php artisan migrate --seed --seeder=AdminCoreSeeder
 ```
 
 ```bash
-php artisan migrate
+npm install
 ```
 
 ### 4. Запускаем сервер и доступ
