@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LinkIndexRequest;
-use App\Http\Requests\StoreLinkRequest;
-use App\Http\Requests\UpdateLinkRequest;
+use App\Http\Requests\LinkStoreRequest;
+use App\Http\Requests\LinkUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -81,7 +81,7 @@ class ShortLinkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreLinkRequest $request)
+    public function store(LinkStoreRequest $request)
     {
         $destination_url = $request->destination_url;
         $url_key = $request->url_key;
@@ -165,7 +165,7 @@ class ShortLinkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateLinkRequest $request, $id)
+    public function update(LinkUpdateRequest $request, $id)
     {
         $link = ShortURL::findOrFail($id);
         $link->update($request->validated());
