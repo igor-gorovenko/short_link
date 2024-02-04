@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LinkIndexRequest;
+use App\Http\Requests\LinkStatisticsRequest;
 use App\Http\Requests\LinkStoreRequest;
 use App\Http\Requests\LinkUpdateRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use AshAllenDesign\ShortURL\Classes\Builder as ShortUrlBuilder;
@@ -52,7 +52,7 @@ class ShortLinkController extends Controller
         }
 
         // Pagination
-        $links = $links->paginate(5)->onEachSide(2)->appends($request->query());
+        $links = $links->paginate(5)->onEachSide(2)->appends($validatedData);
 
         // Render
         return Inertia::render('Admin/Link/Index', [
@@ -85,12 +85,13 @@ class ShortLinkController extends Controller
     {
         $destination_url = $request->destination_url;
         $url_key = $request->url_key;
-        $http_part_url = 'https://';
+        $http_check = 'http';
+        $http_url = 'https://';
 
         $builder = new ShortUrlBuilder();
 
-        if (!str_starts_with($destination_url, 'http')) {
-            $destination_url = $http_part_url . $destination_url;
+        if (!str_starts_with($destination_url, $http_check)) {
+            $destination_url = $http_url . $destination_url;
         }
 
         // Generate url_key if empty
@@ -119,30 +120,34 @@ class ShortLinkController extends Controller
         ]);
     }
 
-    public function statistics(Request $request, $id)
+    public function statistics(LinkStatisticsRequest $request, $id)
     {
+        // Validated Data
+        $validatedData = $request->validated();
+
         $link = ShortURL::findOrFail($id);
-        $visits = (new ShortURLVisit)->newQuery();
+        $visits = ShortURLVisit::query();
 
         $visits->where('short_url_id', $id);
 
+        // Sort
         if ($request->query('sort')) {
-            $attribute = $request->query('sort');
-            $sort_order = 'ASC';
-            if (strncmp($attribute, '-', 1) === 0) {
-                $sort_order = 'DESC';
-                $attribute = substr($attribute, 1);
-            }
+            $attribute = $validatedData['sort'];
+            $sort_order = $attribute[0] === '-' ? 'DESC' : 'ASC';
+            $attribute = ltrim($attribute, '-');
             $visits->orderBy($attribute, $sort_order);
         } else {
             $visits->latest();
         }
 
-        $visits = $visits->paginate(5)->onEachSide(2)->appends($request->query());
+        // Pagination
+        $visits = $visits->paginate(5)->onEachSide(2)->appends($validatedData);
 
+        // Render
         return Inertia::render('Admin/Link/Statistics', [
             'link' => $link,
             'visits' => $visits,
+            'filters' => $validatedData,
         ]);
     }
 
@@ -167,8 +172,10 @@ class ShortLinkController extends Controller
      */
     public function update(LinkUpdateRequest $request, $id)
     {
+        $validatedData = $request->validated();
+
         $link = ShortURL::findOrFail($id);
-        $link->update($request->validated());
+        $link->update($validatedData);
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link updated successfully.'));
