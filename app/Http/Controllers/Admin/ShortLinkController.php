@@ -36,20 +36,11 @@ class ShortLinkController extends Controller
 
         $links = ShortURL::query();
 
-        // Search
-        if ($request->has('search')) {
-            $links->where('default_short_url', 'like', '%' . $validatedData['search'] . '%');
-        }
+        // Apply search filters
+        $this->applySearchFilters($links, $validatedData);
 
-        // Sort
-        if ($request->query('sort')) {
-            $attribute = $validatedData['sort'];
-            $sort_order = $attribute[0] === '-' ? 'DESC' : 'ASC';
-            $attribute = ltrim($attribute, '-');
-            $links->orderBy($attribute, $sort_order);
-        } else {
-            $links->latest();
-        }
+        // Apply sorting
+        $this->applySorting($links, $validatedData);
 
         // Pagination
         $links = $links->paginate(5)->onEachSide(2)->appends($validatedData);
@@ -130,15 +121,8 @@ class ShortLinkController extends Controller
 
         $visits->where('short_url_id', $id);
 
-        // Sort
-        if ($request->query('sort')) {
-            $attribute = $validatedData['sort'];
-            $sort_order = $attribute[0] === '-' ? 'DESC' : 'ASC';
-            $attribute = ltrim($attribute, '-');
-            $visits->orderBy($attribute, $sort_order);
-        } else {
-            $visits->latest();
-        }
+        // Apply sorting
+        $this->applySorting($visits, $validatedData);
 
         // Pagination
         $visits = $visits->paginate(5)->onEachSide(2)->appends($validatedData);
@@ -193,5 +177,38 @@ class ShortLinkController extends Controller
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link deleted successfully.'));
+    }
+
+    /**
+     * Apply search filters to the query.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param array $filters
+     * @return void
+     */
+    private function applySearchFilters($query, $filters)
+    {
+        if (isset($filters['search'])) {
+            $query->where('default_short_url', 'like', '%' . $filters['search'] . '%');
+        }
+    }
+
+    /**
+     * Apply sorting to the query.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param array $sort
+     * @return void
+     */
+    private function applySorting($query, $sort)
+    {
+        if (isset($sort['sort'])) {
+            $attribute = $sort['sort'];
+            $sortOrder = $attribute[0] === '-' ? 'DESC' : 'ASC';
+            $attribute = ltrim($attribute, '-');
+            $query->orderBy($attribute, $sortOrder);
+        } else {
+            $query->latest();
+        }
     }
 }
