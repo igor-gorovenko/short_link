@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
-use App\Http\Requests\StoreLinkRequest;
-use App\Http\Requests\UpdateLinkRequest;
+use App\Http\Requests\LinkIndexRequest;
+use App\Http\Requests\LinkStatisticsRequest;
+use App\Http\Requests\LinkStoreRequest;
+use App\Http\Requests\LinkUpdateRequest;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 use AshAllenDesign\ShortURL\Classes\Builder as ShortUrlBuilder;
 use AshAllenDesign\ShortURL\Models\ShortURL;
 use AshAllenDesign\ShortURL\Models\ShortURLVisit;
@@ -28,31 +29,26 @@ class ShortLinkController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function index()
+    public function index(LinkIndexRequest $request)
     {
-        $links = (new ShortURL)->newQuery();
+        // Validated Data
+        $validatedData = $request->validated();
 
-        if (request()->has('search')) {
-            $links->where('name', 'Like', '%' . request()->input('search') . '%');
-        }
+        $links = ShortURL::query();
 
-        if (request()->query('sort')) {
-            $attribute = request()->query('sort');
-            $sort_order = 'ASC';
-            if (strncmp($attribute, '-', 1) === 0) {
-                $sort_order = 'DESC';
-                $attribute = substr($attribute, 1);
-            }
-            $links->orderBy($attribute, $sort_order);
-        } else {
-            $links->latest();
-        }
+        // Apply search filters
+        $this->applySearchFilters($links, $validatedData);
 
-        $links = $links->paginate(5)->onEachSide(2)->appends(request()->query());
+        // Apply sorting
+        $this->applySorting($links, $validatedData);
 
+        // Pagination
+        $links = $links->paginate(5)->onEachSide(2)->appends($validatedData);
+
+        // Render
         return Inertia::render('Admin/Link/Index', [
             'links' => $links,
-            'filters' => request()->all('search'),
+            'filters' => $validatedData,
             'can' => [
                 'create' => Auth::user()->can('link create'),
                 'edit' => Auth::user()->can('link edit'),
@@ -76,12 +72,18 @@ class ShortLinkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreLinkRequest $request)
+    public function store(LinkStoreRequest $request)
     {
         $destination_url = $request->destination_url;
         $url_key = $request->url_key;
+        $http_check = 'http';
+        $http_url = 'https://';
 
         $builder = new ShortUrlBuilder();
+
+        if (!str_starts_with($destination_url, $http_check)) {
+            $destination_url = $http_url . $destination_url;
+        }
 
         // Generate url_key if empty
         if (empty($url_key)) {
@@ -89,7 +91,7 @@ class ShortLinkController extends Controller
         }
 
         // Create short link
-        $builder->destinationUrl('http://' . $destination_url)->urlKey($url_key)->make();
+        $builder->destinationUrl($destination_url)->urlKey($url_key)->make();
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link created successfully.'));
@@ -109,30 +111,27 @@ class ShortLinkController extends Controller
         ]);
     }
 
-    public function statistics($id)
+    public function statistics(LinkStatisticsRequest $request, $id)
     {
+        // Validated Data
+        $validatedData = $request->validated();
+
         $link = ShortURL::findOrFail($id);
-        $visits = (new ShortURLVisit)->newQuery();
+        $visits = ShortURLVisit::query();
 
         $visits->where('short_url_id', $id);
 
-        if (request()->query('sort')) {
-            $attribute = request()->query('sort');
-            $sort_order = 'ASC';
-            if (strncmp($attribute, '-', 1) === 0) {
-                $sort_order = 'DESC';
-                $attribute = substr($attribute, 1);
-            }
-            $visits->orderBy($attribute, $sort_order);
-        } else {
-            $visits->latest();
-        }
+        // Apply sorting
+        $this->applySorting($visits, $validatedData);
 
-        $visits = $visits->paginate(5)->onEachSide(2)->appends(request()->query());
+        // Pagination
+        $visits = $visits->paginate(5)->onEachSide(2)->appends($validatedData);
 
+        // Render
         return Inertia::render('Admin/Link/Statistics', [
             'link' => $link,
             'visits' => $visits,
+            'filters' => $validatedData,
         ]);
     }
 
@@ -155,10 +154,12 @@ class ShortLinkController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateLinkRequest $request, $id)
+    public function update(LinkUpdateRequest $request, $id)
     {
+        $validatedData = $request->validated();
+
         $link = ShortURL::findOrFail($id);
-        $link->update($request->all());
+        $link->update($validatedData);
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link updated successfully.'));
@@ -176,5 +177,38 @@ class ShortLinkController extends Controller
 
         return redirect()->route('admin.shortlink.index')
             ->with('message', __('Link deleted successfully.'));
+    }
+
+    /**
+     * Apply search filters to the query.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param array $filters
+     * @return void
+     */
+    private function applySearchFilters($query, $filters)
+    {
+        if (isset($filters['search'])) {
+            $query->where('default_short_url', 'like', '%' . $filters['search'] . '%');
+        }
+    }
+
+    /**
+     * Apply sorting to the query.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param array $sort
+     * @return void
+     */
+    private function applySorting($query, $sort)
+    {
+        if (isset($sort['sort'])) {
+            $attribute = $sort['sort'];
+            $sortOrder = $attribute[0] === '-' ? 'DESC' : 'ASC';
+            $attribute = ltrim($attribute, '-');
+            $query->orderBy($attribute, $sortOrder);
+        } else {
+            $query->latest();
+        }
     }
 }

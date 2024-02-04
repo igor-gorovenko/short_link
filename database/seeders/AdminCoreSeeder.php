@@ -136,6 +136,12 @@ class AdminCoreSeeder extends Seeder
                 'enabled' => 1,
                 'weight' => 4,
             ],
+            [
+                'name' => 'Shortlinks',
+                'uri' => '/<admin>/shortlink',
+                'enabled' => 1,
+                'weight' => 5,
+            ],
         ];
 
         $menu->menuItems()->createMany($menu_items);
